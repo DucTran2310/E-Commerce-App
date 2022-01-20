@@ -2,11 +2,13 @@ import { Add, Remove } from "@material-ui/icons"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import styled from "styled-components"
+import { useDispatch } from "react-redux"
 
 import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import Newsletter from "../components/Newsletter"
+import { addProduct } from "../redux/cartRedux"
 
 import { publicRequest } from "../requestMethods"
 import { mobile } from './../reponsive';
@@ -147,6 +149,8 @@ const Product = () => {
   const [color, setColor] = useState("")
   const [size, setSize] = useState("")
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -163,6 +167,12 @@ const Product = () => {
     } else {
       setQuantity(quantity + 1)
     }
+  }
+
+  const handleClickAdd = () => {
+    dispatch(
+      addProduct({ ...product, quantity, color, size })
+    )
   }
 
   return (
@@ -210,7 +220,7 @@ const Product = () => {
                 <Add onClick={() => handleQuantity("inc")} />
               </IconCount>
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={handleClickAdd}>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
 

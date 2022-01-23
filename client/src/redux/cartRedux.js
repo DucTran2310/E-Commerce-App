@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-// createState cho phep khoi tao state, object of reducer functions and "slice name"
+// createSlice cho phep khoi tao state, object of reducer functions and "slice name"
 
 const cartSlice = createSlice({
   name: "cart",

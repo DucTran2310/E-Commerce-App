@@ -1,12 +1,16 @@
+import { useEffect, useState } from "react"
 import { Add, Remove } from "@material-ui/icons"
 import { useSelector } from "react-redux"
 import styled from "styled-components"
+import StripeCheckout from "react-stripe-checkout"
+import { useNavigate } from "react-router";
 
 import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 
-import { mobile } from './../reponsive';
+import { mobile } from './../reponsive'
+import { userRequest } from "../requestMethods"
 
 const Container = styled.div`
 
@@ -164,9 +168,40 @@ const Button = styled.button`
   font-weight: 600;
 `;
 
+const KEY = process.env.REACT_APP_STRIPE
+
 const Cart = () => {
 
   const cart = useSelector(state => state.cart)
+  const [stripeToken, setStripeToken] = useState(null)
+  const navigate = useNavigate()
+
+  const onToken = (token) => {
+    setStripeToken(token)
+  }
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await userRequest.post("/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: 500,
+        });
+        console.log(res.data);
+        navigate("/success", {
+          state: {
+            stripeData: res.data,
+            products: cart,
+          }
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total, navigate]);
+
+  // console.log(stripeToken)
 
   return (
     <Container>
@@ -231,7 +266,18 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name="Adstar Shop"
+              image="https://scontent.fsgn13-2.fna.fbcdn.net/v/t39.30808-1/s200x200/216417714_2994318454177087_5129527537884189386_n.jpg?_nc_cat=108&ccb=1-5&_nc_sid=7206a8&_nc_ohc=eLTuDANBah0AX_FlEmv&_nc_ht=scontent.fsgn13-2.fna&oh=00_AT_Z9_Lj5jmQQwteOddMQvT-OWHR2W-cuhwoZ3_eYZjekw&oe=61EEA951"
+              billingAddress
+              shippingAddress
+              description={`Your total is $${cart.total}`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>

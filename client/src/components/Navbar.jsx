@@ -85,8 +85,8 @@ const Navbar = () => {
   const cart = useSelector(state => state.cart)
   const quatity = useSelector(state => state.cart.quantity)
 
-  console.log(cart)
-  console.log(quatity)
+  // console.log(cart)
+  // console.log(quatity)
 
   return (
     <Container>

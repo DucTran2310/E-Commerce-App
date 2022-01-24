@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken")
 // REGISTER
 router.post("/register", async (req, res) => {
   const newUser = new User({
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
     username: req.body.username,
     email: req.body.email,
     // Mã hóa mật khẩu bằng cryptoJS
@@ -21,7 +23,7 @@ router.post("/register", async (req, res) => {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.status(500).json(error);
   }
 

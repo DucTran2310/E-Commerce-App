@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link as Linkto, useNavigate } from "react-router-dom";
 import styled from "styled-components"
 
 import { login } from "../redux/apiCalls";
@@ -77,13 +78,18 @@ const Login = () => {
   // return về một tham chiếu đến dispatch function từ Redux store 
   // và được sử dụng để dispatch các action
   const dispatch = useDispatch()
+  const navigate = useNavigate();
   // Hook này cho phép chúng ta lấy state từ Redux store
   const { isFetching, error } = useSelector((state) => state.user)
 
   const handleClick = (e) => {
     // Tránh refresh lại trang
     e.preventDefault();
-    login(dispatch, { username, password })
+    const newUser = {
+      username: username,
+      password: password,
+    };
+    login(newUser, dispatch, navigate);
   }
 
   return (
@@ -92,6 +98,7 @@ const Login = () => {
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
           <Input
+            type="text"
             placeholder="Username"
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -100,7 +107,7 @@ const Login = () => {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button onClick={handleClick} disabled={isFetching}>LOGIN</Button>
+          <Button onClick={handleClick}>LOGIN</Button>
           {error && <Error>Something went wrong...</Error>}
           <Link>DO YOU NOT REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>

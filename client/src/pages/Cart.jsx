@@ -11,6 +11,7 @@ import Navbar from "../components/Navbar"
 
 import { mobile } from './../reponsive'
 import { userRequest } from "../requestMethods"
+import { Link } from "react-router-dom"
 
 const Container = styled.div`
 
@@ -210,7 +211,9 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <Link to="/">
+            <TopButton>CONTINUE SHOPPING</TopButton>
+          </Link>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist(0)</TopText>

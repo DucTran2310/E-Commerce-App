@@ -5,9 +5,9 @@ import {
   registerStart,
   registerSuccess,
   registerFailure,
-  logOutStart,
-  logOutSuccess,
-  logOutFailed,
+  logoutStart,
+  logoutSuccess,
+  logoutFailure,
 } from './userRedux'
 import { publicRequest } from '../requestMethods'
 
@@ -33,14 +33,11 @@ export const register = async (user, dispatch, navigate) => {
   }
 }
 
-// export const logOut = async (dispatch, navigate) => {
-//   dispatch(logOutStart());
-//   try {
-//     const res = await axios.post("/v1/auth/logout");
-//     dispatch(logOutSuccess());
-//     dispatch(clearUserList());
-//     navigate("/login");
-//   } catch (err) {
-//     dispatch(logOutFailed());
-//   }
-// };
+export const logout = async (dispatch) => {
+  dispatch(logoutStart())
+  try {
+    dispatch(logoutSuccess())
+  } catch (error) {
+    dispatch(logoutFailure())
+  }
+}

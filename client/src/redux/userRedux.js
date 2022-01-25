@@ -24,17 +24,17 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
-    logOutSuccess: (state) => {
+    logoutStart: (state) => {
+      state.isFetching = true;
+    },
+    logoutSuccess: (state) => {
       state.isFetching = false;
-      state.currentUser = null;
+      state.currentUser = "";
       state.error = false;
     },
-    logOutFailed: (state) => {
+    logoutFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-    },
-    logOutStart: (state) => {
-      state.isFetching = true;
     },
     registerStart: (state) => {
       state.isFetching = true;
@@ -56,9 +56,9 @@ export const userSelector = (state) => state.user.currentUser
 export const { loginStart,
   loginSuccess,
   loginFailure,
-  logOutStart,
-  logOutSuccess,
-  logOutFailed,
+  logoutStart,
+  logoutSuccess,
+  logoutFailure,
   registerStart,
   registerSuccess,
   registerFailure } = userSlice.actions;

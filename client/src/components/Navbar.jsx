@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 
 import { Search, ShoppingCartOutlined } from '@material-ui/icons'
 import { Badge } from '@material-ui/core';
 
 import { mobile } from "../reponsive"
-import { logOutSuccess, userSelector } from '../redux/userRedux';
+import { logoutFailure, logoutSuccess, userSelector } from '../redux/userRedux';
+import { logout } from "../redux/apiCalls"
 
 const Container = styled.div`
   height: 60px;
@@ -83,15 +84,28 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
 
+  const [search, setSearch] = useState("")
+
   // useSelector lấy state từ redux store
   const cart = useSelector(state => state.cart)
   const quatity = useSelector(state => state.cart.quantity)
   // console.log(cart)
   // console.log(quatity)
+  const navigate = useNavigate()
 
   // return về một tham chiếu đến dispatch function từ Redux store 
   // và được sử dụng để dispatch các action
   const dispatch = useDispatch()
+
+  const handleLogout = () => {
+    logoutFailure(dispatch)
+    navigate("/")
+  }
+
+  const handleSearch = (e) => {
+    navigate(`/products/${search}`)
+    setSearch("")
+  }
 
   const currentUser = useSelector(userSelector)
   console.log(currentUser)
@@ -102,8 +116,16 @@ const Navbar = () => {
         <Left>
           <Language>EN</Language>
           <SearchContainer>
-            <Input placeholder="Search" />
-            <Search style={{ color: "gray", fontSize: 16 }} />
+            <Input
+              placeholder="Search type clothes"
+              value={search}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Search
+              style={{ color: "gray", fontSize: 16 }}
+              onClick={handleSearch}
+            />
           </SearchContainer>
         </Left>
         <Link to="/" style={{ textDecoration: 'none', color: 'black' }}>
@@ -115,7 +137,7 @@ const Navbar = () => {
               <MenuItem>REGISTER</MenuItem>
             </Link>
             :
-            <button style={{ border: 'none', color: 'black', background: "white", fontSize: "14px", paddingTop: "5px", fontWeight: "800" }} onClick={() => dispatch(logOutSuccess())} >
+            <button style={{ border: 'none', color: 'black', background: "white", fontSize: "14px", paddingTop: "5px", fontWeight: "800" }} onClick={handleLogout} >
               LOGOUT
             </button>
           }
@@ -127,11 +149,17 @@ const Navbar = () => {
             <p style={{ marginLeft: "20px", fontSize: "18px" }}>{currentUser.username}</p>
           }
           <Link to="/cart">
-            <MenuItem>
-              <Badge badgeContent={quatity} color="primary">
+            {currentUser ?
+              <MenuItem>
+                <Badge badgeContent={quatity} color="primary">
+                  <ShoppingCartOutlined />
+                </Badge>
+              </MenuItem>
+              :
+              <MenuItem>
                 <ShoppingCartOutlined />
-              </Badge>
-            </MenuItem>
+              </MenuItem>
+            }
           </Link>
         </Right>
       </Wrapper>

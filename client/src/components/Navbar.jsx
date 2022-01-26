@@ -98,7 +98,7 @@ const Navbar = () => {
   const dispatch = useDispatch()
 
   const handleLogout = () => {
-    logoutFailure(dispatch)
+    dispatch(logoutSuccess())
     navigate("/")
   }
 
